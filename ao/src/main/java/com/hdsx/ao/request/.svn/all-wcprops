@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/hdgis/!svn/ver/4495/trunk/ao/src/main/java/com/hdsx/ao/request
+END
+XlsRequest.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/hdgis/!svn/ver/4495/trunk/ao/src/main/java/com/hdsx/ao/request/XlsRequest.java
+END
+TYPE.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/hdgis/!svn/ver/4495/trunk/ao/src/main/java/com/hdsx/ao/request/TYPE.java
+END
+ShpRequest.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/hdgis/!svn/ver/7686/trunk/ao/src/main/java/com/hdsx/ao/request/ShpRequest.java
+END
+Request.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/hdgis/!svn/ver/4495/trunk/ao/src/main/java/com/hdsx/ao/request/Request.java
+END
+ZipRequest.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/hdgis/!svn/ver/7686/trunk/ao/src/main/java/com/hdsx/ao/request/ZipRequest.java
+END
+AbstractRequest.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/hdgis/!svn/ver/7686/trunk/ao/src/main/java/com/hdsx/ao/request/AbstractRequest.java
+END
