@@ -1,0 +1,397 @@
+package com.hdsx.ao.util;
+/*if(value.getClass().equals(MemoryBlobStream.class))
+{
+	IMemoryBlobStream pMBS = (IMemoryBlobStream) value;
+	IMemoryBlobStreamVariant varBlobStream = (IMemoryBlobStreamVariant)pMBS;
+	Byte[] byt=new Byte[pMBS.getSize()];
+	varBlobStream.exportToVariant(byt);
+	//ReflectUtils.setValue(name, value, bean);break;
+}
+*/
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.esri.arcgis.geodatabase.IFeature;
+import com.esri.arcgis.geodatabase.IFeatureBuffer;
+import com.esri.arcgis.geodatabase.IFeatureClass;
+import com.esri.arcgis.geodatabase.IField;
+import com.esri.arcgis.geodatabase.IFields;
+import com.esri.arcgis.geodatabase.esriFieldType;
+import com.esri.arcgis.geometry.IGeometry;
+import com.esri.arcgis.system.IMemoryBlobStream;
+import com.esri.arcgis.system.IMemoryBlobStreamVariant;
+import com.esri.arcgis.system.MemoryBlobStream;
+
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AOUtil.
+ */
+public class AOUtil {
+	private static  Logger log=LoggerFactory.getLogger(AOUtil.class);
+	/**
+	 * 查询空间对象转化为实体bean.
+	 *
+	 * @param <T> the generic type
+	 * @param feature the feature
+	 * @param o the o
+	 * @return the bean
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <T> T getBean(IFeature feature,T o){
+		try 
+		{
+			IFields fields = feature.getFields();
+			if(o instanceof Map)
+			{
+				Map<String,Object> map=(Map) o.getClass().newInstance();
+				for(int i=0;i<fields.getFieldCount();i++)
+				{
+					IField field=fields.getField(i);
+					String name=field.getName();
+					int index=fields.findField(name);
+					Object value=feature.getValue(index);
+					map.put(name, value);
+				}
+				return (T) map;
+			}
+			else
+			{
+				Field[] self=o.getClass().getDeclaredFields();
+				Field[] parent=o.getClass().getSuperclass().getDeclaredFields();
+				Field[] declaredFields=concat(self,parent);
+				Object bean=o.getClass().newInstance();
+				for(Field field:declaredFields)
+				{
+					String name=field.getName();
+					int index=fields.findField(name);
+					if(index==-1)continue;
+					if(name.equals("shape"))
+					{
+						ReflectUtil.setValue(name, feature.getShapeCopy(), bean);
+					}
+					else
+					{
+						Object value=feature.getValue(index);
+						ReflectUtil.setValue(name, value, bean);
+					}
+				}
+				return (T) bean;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/**
+	 * 插入bean转化为空间buffer.
+	 *
+	 * @param featureClass the feature class
+	 * @param o the o
+	 * @return the buffer
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static IFeatureBuffer setBuffer(IFeatureBuffer buffer,Object o){
+		try 
+		{
+			IFields iFields=buffer.getFields();
+			if(o instanceof Map)
+			{
+				for(int i=0,count=iFields.getFieldCount();i<count;i++)
+				{
+					IField field=iFields.getField(i);
+					int index=iFields.findField(field.getName());
+					Map<String,Object> map=(Map)o;
+					Set<String> keys=map.keySet();
+					if(keys.contains(field.getName()))
+					{
+						buffer.setValue(index, map.get(field.getName()));
+					}
+					else
+					{
+						log.info("\tPhysical Name : " + field.getName()+
+								"\tAlias Name    : " + field.getAliasName()+
+								"\tType          : " + getFieldTypeDescription(field.getType())+
+								"\tLength        : " + field.getLength()+
+								"\tPrecision     : " + field.getPrecision()+
+								"\tEditable      : " + field.isEditable()+
+								"\tdefaultValue      : " + field.isEditable());
+					}
+				}
+			}
+			else
+			{
+					Field[] fields=getFields(o.getClass().getSuperclass(),o.getClass().getDeclaredFields());
+					for(Field field:fields)
+					{
+						Object value=ReflectUtil.getValue(field.getName(), o);
+						String name=field.getName();
+						if(value==null)
+						{
+							log.info("\tPhysical Name : " + field.getName()+
+									"\tType          : " + field.getType()+
+									"\t value : "+value);
+							continue;
+						}
+						int index=iFields.findField(name);
+						if(index==-1)
+						{
+							log.debug("\n"+"字段["+name+"]未找到");
+							continue;
+						}
+						//IField iField=iFields.getField(index);
+						/*log.info("\tPhysical Name : " + iField.getName()+
+								"\tAlias Name    : " + iField.getAliasName()+
+								"\tType          : " + getFieldTypeDescription(iField.getType())+
+								"\tLength        : " + iField.getLength()+
+								"\tPrecision     : " + iField.getPrecision()+
+								"\tEditable      : " + iField.isEditable()+
+								"\tdefaultValue      : " + iField.isEditable());*/
+						if(field.getType().equals(IGeometry.class))
+						{
+							IGeometry geometry=(IGeometry)value;
+							buffer.setShapeByRef(geometry);continue;
+						}
+						else
+						{
+							if(field.getType().equals(byte[].class))
+							{
+								IMemoryBlobStream pMBS = new MemoryBlobStream();
+								IMemoryBlobStreamVariant varBlobStream = (IMemoryBlobStreamVariant)pMBS;
+								varBlobStream.importFromVariant(value);
+								buffer.setValue(index, varBlobStream);
+							}
+							else
+							{
+								buffer.setValue(index, value);
+							}
+						}
+					}
+				}
+		} catch (Exception e) {
+			log.debug("\n"+"在AOUtil类中方法getBuffer()为字段赋值时出错");
+			e.printStackTrace();
+		}
+		return buffer;
+	}
+	/**
+	 * 插入bean转化为空间buffer.
+	 *
+	 * @param featureClass the feature class
+	 * @param o the o
+	 * @return the buffer
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static IFeatureBuffer getBuffer(IFeatureClass featureClass,Object o){
+		IFeatureBuffer buffer=null;
+		try 
+		{
+			buffer = featureClass.createFeatureBuffer();
+			if(o instanceof Map)
+			{
+				Map<String,Object> map=(Map)o;
+				Set<String> keys=map.keySet();
+				Iterator<String> iter=keys.iterator();
+				while(iter.hasNext())
+				{
+					String name=iter.next();
+					int index=featureClass.findField(name);
+					if(map.get(name) instanceof IGeometry)
+					{
+						buffer.setShapeByRef((IGeometry) map.get(name));
+					}
+					if(index!=-1)
+					buffer.setValue(index, map.get(name));
+				}
+			}
+			else
+			{
+				Field[] self=o.getClass().getDeclaredFields();
+				Field[] parent=o.getClass().getSuperclass().getDeclaredFields();
+				Field[] fields=concat(self,parent);
+				for(Field field:fields)
+				{
+					Object value=ReflectUtil.getValue(field.getName(), o);
+					String name=field.getName();
+					int index=featureClass.findField(name);
+					if(index==-1)
+					{
+						log.debug("\n"+"字段["+name+"]未找到");
+						continue;
+					}
+					log.debug("\n"+"字段名称:"+name
+							 +"\n"+"字段类型:"+field.getType()
+							 +"\n"+"字段赋值:"+value);
+					if(field.getType().equals(IGeometry.class))
+					{
+						IGeometry geometry=(IGeometry)value;
+						buffer.setShapeByRef(geometry);continue;
+					}
+					else
+					{
+						if(field.getType().equals(byte[].class))
+						{
+							IMemoryBlobStream pMBS = new MemoryBlobStream();
+							IMemoryBlobStreamVariant varBlobStream = (IMemoryBlobStreamVariant)pMBS;
+							varBlobStream.importFromVariant(value);
+							buffer.setValue(index, varBlobStream);
+						}
+						else
+						{
+							buffer.setValue(index, value);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			log.debug("\n"+"在AOUtil类中方法getBuffer()为字段赋值时出错");
+			e.printStackTrace();
+		}
+		return buffer;
+	}
+	
+	/**
+	 * 修改对象转化为feature.
+	 *
+	 * @param featureClass the feature class
+	 * @param feature the feature
+	 * @param o the o
+	 * @return the feature
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static IFeature getFeature(IFeatureClass featureClass,IFeature feature,Object o){
+		try 
+		{
+			if(o instanceof Map)
+			{
+				Map<String,Object> map=(Map)o;
+				Set<String> keys=map.keySet();
+				Iterator<String> iter=keys.iterator();
+				while(iter.hasNext())
+				{
+					String name=iter.next();
+					int index=featureClass.findField(name);
+					if(map.get(name) instanceof IGeometry)
+					{
+						feature.setShapeByRef((IGeometry) map.get(name));
+					}
+					if(index!=-1)
+					feature.setValue(index, map.get(name));
+				}
+			}
+			else
+			{
+				Field[] self=o.getClass().getDeclaredFields();
+				Field[] fields=getFields(o.getClass().getSuperclass(),self);
+				for(Field field:fields)
+				{
+					Object value=ReflectUtil.getValue(field.getName(), o);
+					if(field.getType().equals(IGeometry.class))
+					{
+						IGeometry geometry=(IGeometry)value ;
+						feature.setShapeByRef(geometry);
+					}
+					else
+					{
+						String name=field.getName();
+						int index=featureClass.findField(name);
+						if(index==-1)continue;
+						if(field.getType().equals(byte[].class))
+						{
+							IMemoryBlobStream pMBS = new MemoryBlobStream();
+							IMemoryBlobStreamVariant varBlobStream = (IMemoryBlobStreamVariant)pMBS;
+							varBlobStream.importFromVariant(value);
+							feature.setValue(index, varBlobStream);
+						}
+						else
+						{
+							feature.setValue(index, value);	
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return feature;
+	}
+	 /**
+	   * Get field type description.
+	   *
+	   * @param geometryType The value representing the geometry type
+	   * @return String representing The description of the geometry type.
+	   */
+	  private static String getFieldTypeDescription(int fieldType) {
+	    String description = "Unknown field type";
+	    
+	    switch (fieldType) {
+	    case esriFieldType.esriFieldTypeSmallInteger:
+	      description = "Small Integer";
+	      break;
+	      
+	    case esriFieldType.esriFieldTypeInteger:
+	      description = "Integer";
+	      break;
+	      
+	    case esriFieldType.esriFieldTypeSingle:
+	      description = "Single";
+	      break;
+	      
+	    case esriFieldType.esriFieldTypeDouble:
+	      description = "Double";
+	      break;
+	      
+	    case esriFieldType.esriFieldTypeString:
+	      description = "String";
+	      break;
+	      
+	    case esriFieldType.esriFieldTypeDate:
+	      description = "Date";
+	      break;
+	      
+	    case esriFieldType.esriFieldTypeOID:
+	      description = "Object Identifer";
+	      break;
+	      
+	    case esriFieldType.esriFieldTypeGeometry:
+	      description = "Geometry";
+	      break;
+	      
+	    case esriFieldType.esriFieldTypeBlob:
+	      description = "Blob Storage";
+	      break;
+	    }
+	    
+	    return description;
+	  }
+	  
+	  public static Field[] getFields(Class<?> cla,Field[] fields){
+		  Field[] newFields=fields;
+		  if(cla.getDeclaredFields().length!=0)
+		  {
+			  Field[] parent=cla.getDeclaredFields();
+			  newFields= concat(fields,parent);
+			  getFields(cla.getSuperclass(),newFields);
+		  }
+		  return newFields;
+	  }
+	  /**
+		 * Concat.
+		 *
+		 * @param <T> the generic type
+		 * @param first the first
+		 * @param second the second
+		 * @return the t[]
+		 */
+		public static  <T> T[] concat(T[] first, T[] second) {
+			  T[] result = Arrays.copyOf(first, first.length + second.length);
+			  System.arraycopy(second, 0, result, first.length, second.length);
+			 return result;
+		}
+
+}
