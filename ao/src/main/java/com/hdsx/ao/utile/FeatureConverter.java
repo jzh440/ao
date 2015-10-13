@@ -1,7 +1,6 @@
 package com.hdsx.ao.utile;
 
 import java.io.IOException;
-import java.util.List;
 
 import com.esri.arcgis.geodatabase.IFeature;
 import com.esri.arcgis.geodatabase.IFeatureBuffer;
@@ -40,7 +39,7 @@ public class FeatureConverter {
 						e.printStackTrace();
 					}
 				}else{
-					hdfeature.addAttribute(field.getName(), feature.getValue(i));	
+					hdfeature.setAttribute(field.getName(), feature.getValue(i));	
 				}
 			}
 		} catch (Exception e) {

@@ -17,7 +17,7 @@ public class HDFeature implements Serializable{
 	
 	private Geometry geometry;
 	
-	public void addAttribute(String attribute,Object value) {
+	public void setAttribute(String attribute,Object value) {
 		attributes.put(attribute, value);
 	}
 	
