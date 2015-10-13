@@ -1,9 +1,11 @@
 package com.hdsx.ao.dao;
 
-import java.util.List;
-
-import com.esri.arcgis.geometry.IGeometry;
-import com.hdsx.ao.page.Page;
+import com.hdsx.ao.bean.HDFeatures;
+import com.hdsx.ao.exception.HDException;
+import com.hdsx.ao.parameter.UpdateParameter;
+import com.hdsx.ao.parameter.DeleteParameter;
+import com.hdsx.ao.parameter.InsertParameter;
+import com.hdsx.ao.parameter.QueryParameter;
 
 
 
@@ -11,111 +13,39 @@ import com.hdsx.ao.page.Page;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Interface SdeDao.
+ * The Interface AoDao.
  */
 public interface AoDao{
 	
 	/**
-	 * 单条查询.
+	 * 查询.
 	 *
-	 * @param <T> the generic type
-	 * @param sql : LXDM ='G210'
-	 * @param o the o
-	 * @param tableName the table name
-	 * @return the t
+	 * @param QueryParameter parameter
+	 * @return the Features
 	 */
-	<T> T selectOne(String sql, T o,String tableName);
-	/**
-	 * 只查询shape字段.
-	 *
-	 * @param <T> the generic type
-	 * @param sql : LXDM ='G210'
-	 * @param tableName the table name
-	 * @return the t
-	 */
-	IGeometry selectShape(String sql,String tableName);
-	
-	/**
-	 * 批量查询.
-	 *
-	 * @param <T> the generic type
-	 * @param sql : LXDM LIKE '%'||'G'||'%'
-	 * @param o the o
-	 * @param tableName the table name
-	 * @return the t
-	 */
-	 <T>List<T> selectList(String sql,T o,String tableName);
-		
-	/**
-	 * 插入.
-	 *
-	 * @param <T> the generic type
-	 * @param o the o
-	 * @param tableName the table name
-	 * @return the int
-	 */
-	<T> int insert(T o,String tableName);
-	
-	/**
-	 * 批量插入.
-	 *
-	 * @param <T> the generic type
-	 * @param list the list
-	 * @param tableName the table name
-	 * @return the int
-	 */
-	<T> int insertBath(List<T> list,String tableName);
+	HDFeatures query(QueryParameter parameter) throws HDException;
 	
 	/**
 	 * 修改.
 	 *
-	 * @param <T> the generic type
-	 * @param o the o
-	 * @param sql the sql
-	 * @param tableName the table name
-	 * @return the int
+	 * @param QueryParameter parameter
+	 * @return the Features
 	 */
-	<T> int update(T o,String sql,String tableName);
+	int update(UpdateParameter parameter)throws HDException;
+	
+	/**
+	 * 添加.
+	 *
+	 * @param QueryParameter parameter
+	 * @return the Features
+	 */
+	int insert(InsertParameter parameter)throws HDException;
 	
 	/**
 	 * 删除.
 	 *
-	 * @param sql the sql
-	 * @param tableName the table name
-	 * @return the int
+	 * @param QueryParameter parameter
+	 * @return the Features
 	 */
-	int delete(String sql,String tableName);
-	/**
-	 * 批量删除.
-	 *
-	 * @param sql the sql
-	 * @param tableName the table name
-	 * @return the int
-	 */
-	int deleteBath(String sql,String tableName);
-	
-	/**
-	 * 计量.
-	 *
-	 * @param sql the sql
-	 * @param tableName the table name
-	 * @return the int
-	 */
-	int selectCount(String sql,String tableName);
-	
-	/**
-	 * 分页查询.
-	 *
-	 * @param <T> the generic type
-	 * @param sql the sql
-	 * @param page the page
-	 * @param o the o
-	 * @param tableName the table name
-	 * @return the list
-	 */
-	<T> List<T> selectPage(String sql,Page page,T o,String tableName);
-	
-	
-	
-	
+	int delete(DeleteParameter parameter)throws HDException;
 }

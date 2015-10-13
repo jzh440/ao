@@ -202,21 +202,6 @@
 		</plugins>
 	</build>
   <dependencies>
-  	<dependency>
-  		<groupId>jdom</groupId>
-  		<artifactId>jdom</artifactId>
-  		<version>1.1</version>
-  	</dependency>
-  	<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi</artifactId>
-			<version>3.9</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-excelant</artifactId>
-			<version>3.9</version>
-		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -232,15 +217,5 @@
 			<artifactId>arcobjects</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<dependency>
-		  <groupId>com.esri.geometry</groupId>
-		  <artifactId>esri-geometry-api</artifactId>
-		  <version>1.1</version>
-	    </dependency>
-	    <dependency>
-	      <groupId>javax.servlet</groupId>
-	      <artifactId>javax.servlet-api</artifactId>
-	      <version>3.0.1</version>
-    	</dependency>
   </dependencies>
 </project>
