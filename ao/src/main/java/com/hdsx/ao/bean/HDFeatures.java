@@ -53,5 +53,11 @@ public class HDFeatures {
 	public void addField(HDField field) {
 		fields.add(field);
 	}
+
+	@Override
+	public String toString() {
+		return "HDFeatures [geometryType=" + geometryType + ", spatialReference=" + spatialReference + ", features="
+				+ features + ", fields=" + fields + "]";
+	}
 	
 }

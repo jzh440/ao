@@ -1,5 +1,7 @@
 package com.hdsx.ao.dao;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +11,7 @@ import com.esri.arcgis.geodatabase.IFeatureBuffer;
 import com.esri.arcgis.geodatabase.IFeatureClass;
 import com.esri.arcgis.geodatabase.IFeatureCursor;
 import com.esri.arcgis.geodatabase.IFeatureWorkspace;
+import com.esri.arcgis.geodatabase.IFields;
 import com.esri.arcgis.geodatabase.IQueryFilter;
 import com.esri.arcgis.geodatabase.ISpatialFilter;
 import com.esri.arcgis.geodatabase.QueryFilter;
@@ -17,6 +20,7 @@ import com.esri.arcgis.interop.AutomationException;
 import com.esri.arcgis.system.Cleaner;
 import com.hdsx.ao.bean.HDFeature;
 import com.hdsx.ao.bean.HDFeatures;
+import com.hdsx.ao.bean.HDField;
 import com.hdsx.ao.exception.HDException;
 import com.hdsx.ao.parameter.DeleteParameter;
 import com.hdsx.ao.parameter.InsertParameter;
@@ -49,9 +53,23 @@ public class AoDaoImpl implements AoDao {
 			filter.setWhereClause(parameter.getWhere());
 			filter.setSubFields(parameter.getOutFields());
 			featureCursor = featureClass.search(filter, true);
-			IFeature feature = featureCursor.nextFeature();
 			HDFeature hdfeature ;
 			hdfeatures = new HDFeatures ();
+			hdfeatures.setGeometryType(featureClass.getFeatureType()+"");
+			//查询元数据
+			HDField field ;
+			IFields iFields = featureCursor.getFields();
+			List<HDField> hdFields = new ArrayList<HDField>();
+			for(int i=0,size=iFields.getFieldCount();i<size;i++){
+				field = new HDField();
+				field.setAlias(iFields.getField(i).getAliasName());
+				field.setName(iFields.getField(i).getName());
+				field.setType(iFields.getField(i).getType()+"");
+				hdFields.add(field);
+			}
+			hdfeatures.setFields(hdFields);
+			//查询结果集
+			IFeature feature = featureCursor.nextFeature();
 			while(feature != null){
 				hdfeature = new HDFeature();
 				FeatureConverter.convert(feature, hdfeature);
@@ -61,7 +79,7 @@ public class AoDaoImpl implements AoDao {
 				System.out.println("已查询数据"+count+"条，当前执行到:"+hdfeature.toString());
 			}
 			Cleaner.release(featureCursor);
-			featureCursor.flush();
+			//featureCursor.flush();
 			featureCursor = null;   
 		} catch (AutomationException e) {
 			throw new HDException(e.getDescription(),e.getCause());

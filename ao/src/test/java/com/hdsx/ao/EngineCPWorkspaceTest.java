@@ -50,10 +50,10 @@ public class EngineCPWorkspaceTest {
 		workspace.setUser("GISDB");
 		AoDao dao =new AoDaoImpl(workspace);
 		QueryParameter parameter = new QueryParameter();
-		parameter.setLayerName("GIS_LX");
+		parameter.setLayerName("GIS_GK");
 		try {
 			HDFeatures features=dao.query(parameter);
-			System.out.println(features.getFeatures().size());
+			System.out.println(features.toString());
 		} catch (HDException e) {
 			//e.printStackTrace();
 			// TODO Auto-generated catch block
