@@ -132,9 +132,9 @@ public class AoDaoImpl implements AoDao {
 			buffer = featureClass.createFeatureBuffer();
 			for(HDFeature feature:parameter.getFeatures()){
 				FeatureConverter.convert(feature, buffer);
+				featureCursor.insertFeature(buffer);
 				count+=1;
 			}
-			featureCursor.insertFeature(buffer);
 			featureCursor.flush();
 			Cleaner.release(featureCursor);
 			featureCursor = null;   
