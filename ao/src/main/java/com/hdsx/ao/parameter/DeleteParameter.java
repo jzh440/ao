@@ -1,5 +1,15 @@
 package com.hdsx.ao.parameter;
-
+/**
+ * 数据访删除参数
+ *   
+ * @author jingzh
+ * 
+ * @createDate 2015-10-14
+ * 
+ * @email jingzh@hdsxtech.com
+ * 
+ * @version 1.0
+ */
 public class DeleteParameter implements IParameter {
 	
 	private String layerName;
@@ -27,5 +37,6 @@ public class DeleteParameter implements IParameter {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 
 }

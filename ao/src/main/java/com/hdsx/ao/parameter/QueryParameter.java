@@ -4,7 +4,17 @@ import java.io.Serializable;
 
 import com.hdsx.ao.parameter.support.DataFormatType;
 import com.hdsx.ao.parameter.support.GeometryFormatType;
-
+/**
+ * 数据访查询参数
+ *   
+ * @author jingzh
+ * 
+ * @createDate 2015-10-14
+ * 
+ * @email jingzh@hdsxtech.com
+ * 
+ * @version 1.0
+ */
 public class QueryParameter implements IParameter,Serializable {
 
 	/**
@@ -128,6 +138,5 @@ public class QueryParameter implements IParameter,Serializable {
 	public void setGeoFormatType(GeometryFormatType geoFormatType) {
 		this.geoFormatType = geoFormatType;
 	}
-
 	
 }

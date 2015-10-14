@@ -22,8 +22,10 @@ public class FeatureConverter {
 			for(int i=0,size=iFields.getFieldCount();i<size;i++){
 				IField field = iFields.getField(i);
 				if(field.getType() == esriFieldType.esriFieldTypeGeometry){
-					byte[] bytes = GeometryConverter.esriGeometry2WKB(feature.getShapeCopy());
-					hdfeature.setGeometry(GeometryConverter.wkb2Geometry(bytes));
+					if(feature.getShapeCopy() != null){
+						byte[] bytes = GeometryConverter.esriGeometry2WKB(feature.getShapeCopy());
+						hdfeature.setGeometry(GeometryConverter.wkb2Geometry(bytes));
+					}
 					continue;
 				}
 				if(field.getType() == esriFieldType.esriFieldTypeBlob){

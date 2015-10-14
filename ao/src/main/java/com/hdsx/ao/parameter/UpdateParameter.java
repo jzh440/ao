@@ -1,7 +1,17 @@
 package com.hdsx.ao.parameter;
 
 import com.hdsx.ao.bean.HDFeature;
-
+/**
+ * 数据访修改参数
+ *   
+ * @author jingzh
+ * 
+ * @createDate 2015-10-14
+ * 
+ * @email jingzh@hdsxtech.com
+ * 
+ * @version 1.0
+ */
 public class UpdateParameter implements IParameter {
 
 	private String layerName;

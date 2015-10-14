@@ -26,15 +26,28 @@ import com.hdsx.ao.parameter.DeleteParameter;
 import com.hdsx.ao.parameter.InsertParameter;
 import com.hdsx.ao.parameter.QueryParameter;
 import com.hdsx.ao.parameter.UpdateParameter;
+import com.hdsx.ao.sql.SQLRunner;
 import com.hdsx.ao.utile.FeatureConverter;
 import com.hdsx.ao.workspace.IHDWorkspace;
 
-
+/**
+ * 数据访问接口 API
+ *   
+ * @author jingzh
+ * 
+ * @createDate 2015-10-14
+ * 
+ * @email jingzh@hdsxtech.com
+ * 
+ * @version 1.0
+ */
 public class AoDaoImpl implements AoDao {
 
 	private Logger log=LoggerFactory.getLogger(AoDaoImpl.class);
 
 	private IFeatureWorkspace workspace;
+	
+	private SQLRunner sqlRunner = new SQLRunner();
 	
 	public AoDaoImpl(IHDWorkspace workspace){
 		this.workspace= (IFeatureWorkspace) workspace.getWorkspace() ;
@@ -51,6 +64,8 @@ public class AoDaoImpl implements AoDao {
 			featureClass = workspace.openFeatureClass(parameter.getLayerName());
 			ISpatialFilter filter = new SpatialFilter();
 			filter.setWhereClause(parameter.getWhere());
+			System.out.println(sqlRunner.run(parameter));
+			log.info("SQL 查询语句{}",sqlRunner.run(parameter));
 			filter.setSubFields(parameter.getOutFields());
 			featureCursor = featureClass.search(filter, true);
 			HDFeature hdfeature ;
@@ -103,6 +118,8 @@ public class AoDaoImpl implements AoDao {
 			IFeature feature = featureCursor.nextFeature();
 			FeatureConverter.convert(feature, parameter.getFeature());
 			while(feature != null){
+				System.out.println(sqlRunner.run(parameter,parameter.getFeature()));
+				log.info("SQL 查询语句{}",sqlRunner.run(parameter,parameter.getFeature()));
 				featureCursor.updateFeature(feature);
 				count+=1;
 			}
@@ -132,6 +149,8 @@ public class AoDaoImpl implements AoDao {
 			buffer = featureClass.createFeatureBuffer();
 			for(HDFeature feature:parameter.getFeatures()){
 				FeatureConverter.convert(feature, buffer);
+				System.out.println(sqlRunner.run(parameter,feature));
+				log.info("SQL 查询语句{}",sqlRunner.run(parameter,feature));
 				featureCursor.insertFeature(buffer);
 				count+=1;
 			}
@@ -160,6 +179,8 @@ public class AoDaoImpl implements AoDao {
 			filter.setWhereClause(parameter.getWhere());
 			featureCursor = featureClass.IFeatureClass_update(filter, true);
 			while(featureCursor.nextFeature()!=null){
+				System.out.println(sqlRunner.run(parameter));
+				log.info("SQL 查询语句{}",sqlRunner.run(parameter));
 				featureCursor.deleteFeature();
 				count+=1;
 			}

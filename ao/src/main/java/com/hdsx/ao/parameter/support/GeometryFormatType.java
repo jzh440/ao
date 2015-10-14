@@ -1,5 +1,16 @@
 package com.hdsx.ao.parameter.support;
 
+/**
+ * 空间数据返回格式参数
+ *   
+ * @author jingzh
+ * 
+ * @createDate 2015-10-14
+ * 
+ * @email jingzh@hdsxtech.com
+ * 
+ * @version 1.0
+ */
 public enum GeometryFormatType {
 
 	WKT (1,"WKT"),

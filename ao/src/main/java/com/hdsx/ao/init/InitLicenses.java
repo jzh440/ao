@@ -10,7 +10,17 @@ import com.esri.arcgis.system.AoInitialize;
 import com.esri.arcgis.system.EngineInitializer;
 import com.esri.arcgis.system.esriLicenseProductCode;
 import com.esri.arcgis.system.esriLicenseStatus;
-
+/**
+ * ArcGIS Engine 授权认证 
+ *   
+ * @author jingzh
+ * 
+ * @createDate 2015-10-14
+ * 
+ * @email jingzh@hdsxtech.com
+ * 
+ * @version 1.0
+ */
 public class InitLicenses {
 	
 	private static Logger log=LoggerFactory.getLogger(InitLicenses.class);

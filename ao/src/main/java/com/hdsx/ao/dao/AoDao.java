@@ -12,8 +12,17 @@ import com.hdsx.ao.parameter.QueryParameter;
 
 
 // TODO: Auto-generated Javadoc
+
 /**
- * The Interface AoDao.
+ * 数据访问接口 API
+ *   
+ * @author jingzh
+ * 
+ * @createDate 2015-10-14
+ * 
+ * @email jingzh@hdsxtech.com
+ * 
+ * @version 1.0
  */
 public interface AoDao{
 	

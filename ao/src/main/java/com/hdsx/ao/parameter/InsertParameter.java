@@ -4,7 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hdsx.ao.bean.HDFeature;
-
+/**
+ * 数据访插入参数
+ *   
+ * @author jingzh
+ * 
+ * @createDate 2015-10-14
+ * 
+ * @email jingzh@hdsxtech.com
+ * 
+ * @version 1.0
+ */
 public class InsertParameter implements IParameter {
 
 	private String layerName;

@@ -1,14 +1,12 @@
 package com.hdsx.ao;
 
-import static org.junit.Assert.*;
-
+import java.util.Date;
 import java.util.UUID;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.esri.arcgis.geodatabase.IWorkspace;
 import com.hdsx.ao.bean.HDFeature;
 import com.hdsx.ao.bean.HDFeatures;
 import com.hdsx.ao.dao.AoDao;
@@ -21,54 +19,38 @@ import com.hdsx.ao.utile.GeometryConverter;
 import com.hdsx.ao.workspace.EngineCPWorkspace;
 import com.vividsolutions.jts.geom.Geometry;
 
-import junit.framework.Assert;
-
 public class EngineCPWorkspaceTest {
 
+	private AoDao dao;
 	@Before
 	public void before(){
-		System.out.println("before");
 		InitLicenses.init();
-	}
-	
-	@Test
-	public void test() {
 		EngineCPWorkspace workspace = new EngineCPWorkspace();
 		workspace.setInstance("sde:oracle11g:vm_jxgis");
 		workspace.setPassword("GISDB");
 		workspace.setUser("GISDB");
-		System.out.println(workspace.toString());
-		IWorkspace ws = workspace.getWorkspace();
-		
+		dao =new AoDaoImpl(workspace);
+		System.out.println("数据源初始化连接成功");
 	}
 	
 	@Test
 	public void testDaoQuery() {
-		EngineCPWorkspace workspace = new EngineCPWorkspace();
-		workspace.setInstance("sde:oracle11g:vm_jxgis");
-		workspace.setPassword("GISDB");
-		workspace.setUser("GISDB");
-		AoDao dao =new AoDaoImpl(workspace);
 		QueryParameter parameter = new QueryParameter();
 		parameter.setLayerName("GIS_GK");
+		parameter.setWhere("1=1");
+		parameter.setOutFields("GKMC,GKDM,SHAPE");
+		//parameter.setOutFields("SUM(ZRAXCD) AS T_SUM");
 		try {
 			HDFeatures features=dao.query(parameter);
 			System.out.println(features.toString());
 		} catch (HDException e) {
-			//e.printStackTrace();
-			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 		
 	}
 	
 	@Test
 	public void testDaoInsert() {
-		EngineCPWorkspace workspace = new EngineCPWorkspace();
-		workspace.setInstance("sde:oracle11g:vm_jxgis");
-		workspace.setPassword("GISDB");
-		workspace.setUser("GISDB");
-		AoDao dao =new AoDaoImpl(workspace);
 		InsertParameter parameter = new InsertParameter();
 		parameter.setLayerName("GIS_GK");
 		try {
@@ -78,6 +60,7 @@ public class EngineCPWorkspaceTest {
 			feature.setAttribute("GKMC", "哈利路亚");
 			feature.setAttribute("ZRAXCD", 123.34);
 			feature.setAttribute("GKMJ", "123.56");
+			feature.setAttribute("DRSJ", new Date());
 			Geometry geom=GeometryConverter.wkt2Geometry("POINT(128.2332323 28.2324324)");
 			feature.setGeometry(geom);
 			parameter.addFeature(feature);

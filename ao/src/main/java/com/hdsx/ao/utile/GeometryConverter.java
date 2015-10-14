@@ -21,9 +21,15 @@ import com.vividsolutions.jts.io.WKBWriter;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
 /**
- * 空间数据格式转换工具类
+ * 空间数据转换工具
+ *   
  * @author jingzh
- *
+ * 
+ * @createDate 2015-10-14
+ * 
+ * @email jingzh@hdsxtech.com
+ * 
+ * @version 1.0
  */
 public class GeometryConverter {
 	

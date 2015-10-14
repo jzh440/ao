@@ -6,7 +6,17 @@ import com.esri.arcgis.system.IPropertySet;
 import com.esri.arcgis.system.PropertySet;
 import com.hdsx.ao.workspace.EngineCPConfig;
 import com.hdsx.ao.workspace.IHDWorkspace;
-
+/**
+ * Oracle空间数据源
+ *   
+ * @author jingzh
+ * 
+ * @createDate 2015-10-14
+ * 
+ * @email jingzh@hdsxtech.com
+ * 
+ * @version 1.0
+ */
 public class OracleCPWorkspace implements IHDWorkspace {
 
 	@Override

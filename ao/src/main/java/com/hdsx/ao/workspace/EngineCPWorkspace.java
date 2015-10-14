@@ -4,7 +4,17 @@ import java.lang.reflect.Field;
 
 import com.esri.arcgis.geodatabase.IWorkspace;
 import com.hdsx.ao.workspace.platform.PlatformWorkspaceFactory;
-
+/**
+ * 空间数据源连接池
+ *   
+ * @author jingzh
+ * 
+ * @createDate 2015-10-14
+ * 
+ * @email jingzh@hdsxtech.com
+ * 
+ * @version 1.0
+ */
 public class EngineCPWorkspace extends EngineCPConfig implements IHDWorkspace{
 
 	/**
