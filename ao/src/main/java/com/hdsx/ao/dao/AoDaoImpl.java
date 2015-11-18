@@ -179,13 +179,15 @@ public class AoDaoImpl implements AoDao {
 			filter.setWhereClause(parameter.getWhere());
 			featureCursor = featureClass.IFeatureClass_update(filter, true);
 			while(featureCursor.nextFeature()!=null){
-				System.out.println(sqlRunner.run(parameter));
+				//System.out.println(sqlRunner.run(parameter));
 				log.info("SQL 查询语句{}",sqlRunner.run(parameter));
 				featureCursor.deleteFeature();
 				count+=1;
 			}
-			featureCursor.flush();
-			Cleaner.release(featureCursor);
+			if(count>1){
+				//featureCursor.flush();
+			}
+ 			Cleaner.release(featureCursor);
 			featureCursor = null;  
 		} catch (AutomationException e) {
 			count = -1;
